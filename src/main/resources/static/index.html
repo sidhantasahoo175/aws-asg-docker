@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AWS Cloud Deployment Dashboard</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Inter, Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+
+        .header {
+            background: linear-gradient(135deg, #0f172a, #1e3a5f);
+            color: white;
+            padding: 22px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 20px rgba(15, 23, 42, 0.15);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 13px;
+            background: rgba(255, 255, 255, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .brand h1 {
+            font-size: 21px;
+            margin-bottom: 4px;
+        }
+
+        .brand p {
+            font-size: 13px;
+            opacity: 0.72;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            background: rgba(34, 197, 94, 0.12);
+            color: #bbf7d0;
+            padding: 9px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            background: #22c55e;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.8);
+        }
+
+        /* MAIN */
+
+        .hero {
+            max-width: 1200px;
+            margin: 45px auto 30px;
+            padding: 0 25px;
+        }
+
+        .hero h2 {
+            font-size: 36px;
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            color: #64748b;
+            font-size: 16px;
+            line-height: 1.7;
+            max-width: 850px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 25px 60px;
+        }
+
+        /* TOP CARDS */
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 17px;
+            padding: 24px;
+            box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06);
+            transition: 0.25s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 35px rgba(15, 23, 42, 0.10);
+        }
+
+        .card-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #64748b;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .card-value {
+            font-size: 23px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .card-subtitle {
+            color: #94a3b8;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .full-card {
+            grid-column: span 3;
+        }
+
+        /* SECTION */
+
+        .section {
+            margin-top: 28px;
+        }
+
+        .section-header {
+            margin-bottom: 15px;
+        }
+
+        .section-header h3 {
+            font-size: 21px;
+            color: #0f172a;
+        }
+
+        .section-header p {
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        /* CI/CD PIPELINE */
+
+        .pipeline-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 18px;
+            padding: 28px;
+            box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06);
+        }
+
+        .pipeline {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 10px 2px 15px;
+        }
+
+        .pipeline-step {
+            min-width: 115px;
+            text-align: center;
+            flex: 1;
+        }
+
+        .pipeline-icon {
+            width: 58px;
+            height: 58px;
+            margin: auto;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+            background: #f1f5f9;
+            border: 1px solid #dbe3ec;
+        }
+
+        .pipeline-step strong {
+            display: block;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #0f172a;
+        }
+
+        .pipeline-step span {
+            display: block;
+            margin-top: 4px;
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .pipeline-arrow {
+            color: #64748b;
+            font-size: 23px;
+            flex: 0 0 auto;
+        }
+
+        /* ARCHITECTURE */
+
+        .architecture-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 18px;
+            padding: 28px;
+            box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06);
+        }
+
+        .architecture-flow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .architecture-node {
+            background: #f8fafc;
+            border: 1px solid #dbe3ec;
+            border-radius: 13px;
+            padding: 15px 22px;
+            min-width: 240px;
+            text-align: center;
+        }
+
+        .architecture-node .node-icon {
+            font-size: 23px;
+            margin-bottom: 7px;
+        }
+
+        .architecture-node strong {
+            display: block;
+            font-size: 14px;
+            color: #0f172a;
+        }
+
+        .architecture-node span {
+            display: block;
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        .architecture-arrow {
+            color: #64748b;
+            font-size: 23px;
+            height: 31px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* VPC */
+
+        .vpc-box {
+            width: 100%;
+            border: 2px dashed #cbd5e1;
+            border-radius: 18px;
+            padding: 20px;
+            margin-top: 5px;
+            background: #fbfdff;
+        }
+
+        .vpc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .vpc-header strong {
+            font-size: 15px;
+            color: #0f172a;
+        }
+
+        .network-label {
+            background: #eef2ff;
+            color: #3730a3;
+            padding: 7px 11px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .subnet-box {
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 18px;
+            background: white;
+        }
+
+        .subnet-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #334155;
+            margin-bottom: 14px;
+        }
+
+        .infra-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .infra-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 11px;
+            padding: 14px;
+            text-align: center;
+        }
+
+        .infra-item strong {
+            display: block;
+            font-size: 12px;
+            color: #334155;
+        }
+
+        .infra-item span {
+            display: block;
+            margin-top: 5px;
+            color: #64748b;
+            font-size: 11px;
+        }
+
+        /* ASG */
+
+        .asg-box {
+            margin-top: 16px;
+            border: 1px solid #dbe3ec;
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 18px;
+        }
+
+        .asg-title {
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+
+        .instance-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .instance {
+            background: white;
+            border: 1px solid #dbe3ec;
+            border-radius: 11px;
+            padding: 14px;
+            text-align: center;
+        }
+
+        .instance-icon {
+            font-size: 21px;
+            margin-bottom: 7px;
+        }
+
+        .instance strong {
+            display: block;
+            font-size: 12px;
+        }
+
+        .healthy {
+            display: inline-block;
+            margin-top: 7px;
+            background: #ecfdf5;
+            color: #15803d;
+            border-radius: 20px;
+            padding: 5px 9px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        /* TECHNOLOGY */
+
+        .tech-section {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 18px;
+            padding: 26px;
+            box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06);
+        }
+
+        .tech-group {
+            margin-top: 18px;
+        }
+
+        .tech-group:first-child {
+            margin-top: 0;
+        }
+
+        .tech-group-title {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .tech-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+        }
+
+        .tech {
+            padding: 8px 12px;
+            border-radius: 20px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            font-size: 11px;
+            color: #334155;
+            font-weight: 700;
+        }
+
+        /* ENDPOINTS */
+
+        .endpoint-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .endpoint {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 11px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .method {
+            background: #dcfce7;
+            color: #15803d;
+            border-radius: 7px;
+            padding: 6px 8px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .endpoint strong {
+            font-family: Consolas, monospace;
+            font-size: 13px;
+        }
+
+        .endpoint small {
+            margin-left: auto;
+            color: #64748b;
+            font-size: 11px;
+        }
+
+        /* FOOTER */
+
+        .footer {
+            text-align: center;
+            padding: 28px;
+            color: #94a3b8;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 950px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .full-card {
+                grid-column: span 2;
+            }
+
+            .infra-row {
+                grid-template-columns: 1fr;
+            }
+
+            .instance-row {
+                grid-template-columns: 1fr;
+            }
+
+            .endpoint-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                padding: 18px 5%;
+            }
+
+            .status-badge {
+                display: none;
+            }
+
+            .hero h2 {
+                font-size: 28px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-card {
+                grid-column: span 1;
+            }
+
+            .pipeline {
+                flex-direction: column;
+            }
+
+            .pipeline-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <header class="header">
+
+        <div class="brand">
+
+            <div class="brand-icon">☁</div>
+
+            <div>
+                <h1>AWS Cloud Deployment</h1>
+                <p>Spring Boot • Docker • Jenkins CI/CD</p>
+            </div>
+
+        </div>
+
+        <div class="status-badge">
+            <div class="status-dot"></div>
+            <span id="statusText">CHECKING...</span>
+        </div>
+
+    </header>
+
+
+    <section class="hero">
+
+        <h2>Application is Live 🚀</h2>
+
+        <p>
+            Professional cloud deployment dashboard showcasing a Spring Boot
+            application running inside Docker and deployed through an automated
+            Jenkins CI/CD pipeline on AWS with Auto Scaling and Application Load Balancer.
+        </p>
+
+    </section>
+
+
+    <main class="container">
+
+
+        <!-- SUMMARY CARDS -->
+
+        <div class="grid">
+
+            <div class="card">
+                <div class="card-title">Application</div>
+                <div class="card-value">Spring Boot</div>
+                <div class="card-subtitle">Java backend application</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Container Platform</div>
+                <div class="card-value">Docker</div>
+                <div class="card-subtitle">Containerized Spring Boot deployment</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Deployment</div>
+                <div class="card-value">Jenkins CI/CD</div>
+                <div class="card-subtitle">Automated build and deployment pipeline</div>
+            </div>
+
+        </div>
+
+
+        <!-- CI/CD -->
+
+        <section class="section">
+
+            <div class="section-header">
+                <h3>CI/CD Pipeline</h3>
+                <p>Automated flow from source code commit to AWS deployment</p>
+            </div>
+
+            <div class="pipeline-card">
+
+                <div class="pipeline">
+
+                    <div class="pipeline-step">
+                        <div class="pipeline-icon">◉</div>
+                        <strong>GitHub</strong>
+                        <span>Source Code</span>
+                    </div>
+
+                    <div class="pipeline-arrow">→</div>
+
+                    <div class="pipeline-step">
+                        <div class="pipeline-icon">⚙</div>
+                        <strong>Jenkins</strong>
+                        <span>CI/CD Server</span>
+                    </div>
+
+                    <div class="pipeline-arrow">→</div>
+
+                    <div class="pipeline-step">
+                        <div class="pipeline-icon">M</div>
+                        <strong>Maven</strong>
+                        <span>Build</span>
+                    </div>
+
+                    <div class="pipeline-arrow">→</div>
+
+                    <div class="pipeline-step">
+                        <div class="pipeline-icon">▣</div>
+                        <strong>Docker</strong>
+                        <span>Build Image</span>
+                    </div>
+
+                    <div class="pipeline-arrow">→</div>
+
+                    <div class="pipeline-step">
+                        <div class="pipeline-icon">◈</div>
+                        <strong>Docker Hub</strong>
+                        <span>Image Registry</span>
+                    </div>
+
+                    <div class="pipeline-arrow">→</div>
+
+                    <div class="pipeline-step">
+                        <div class="pipeline-icon">☁</div>
+                        <strong>AWS ASG</strong>
+                        <span>Deployment</span>
+                    </div>
+
+                    <div class="pipeline-arrow">→</div>
+
+                    <div class="pipeline-step">
+                        <div class="pipeline-icon">⚖</div>
+                        <strong>ALB</strong>
+                        <span>Traffic Routing</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- AWS ARCHITECTURE -->
+
+        <section class="section">
+
+            <div class="section-header">
+                <h3>AWS Infrastructure Architecture</h3>
+                <p>High-availability application deployment across the AWS environment</p>
+            </div>
+
+            <div class="architecture-card">
+
+                <div class="architecture-flow">
+
+                    <div class="architecture-node">
+
+                        <div class="node-icon">🌐</div>
+
+                        <strong>Internet / Client</strong>
+
+                        <span>Incoming application traffic</span>
+
+                    </div>
+
+
+                    <div class="architecture-arrow">↓</div>
+
+
+                    <div class="architecture-node">
+
+                        <div class="node-icon">↗</div>
+
+                        <strong>Internet Gateway</strong>
+
+                        <span>IGW • Public internet connectivity</span>
+
+                    </div>
+
+
+                    <div class="architecture-arrow">↓</div>
+
+
+                    <div class="architecture-node">
+
+                        <div class="node-icon">⚖</div>
+
+                        <strong>Application Load Balancer</strong>
+
+                        <span>ASG-Application-LB</span>
+
+                    </div>
+
+
+                    <div class="architecture-arrow">↓</div>
+
+
+                    <div class="architecture-node">
+
+                        <div class="node-icon">◎</div>
+
+                        <strong>Target Group</strong>
+
+                        <span>ASG-Target-Group • Port 80</span>
+
+                    </div>
+
+
+                    <div class="architecture-arrow">↓</div>
+
+
+                    <div class="vpc-box">
+
+                        <div class="vpc-header">
+
+                            <strong>VPC • ASG-ALB-VPC</strong>
+
+                            <div class="network-label">
+                                10.0.0.0 / 16
+                            </div>
+
+                        </div>
+
+
+                        <div class="subnet-box">
+
+                            <div class="subnet-title">
+                                Subnet Layer
+                            </div>
+
+
+                            <div class="infra-row">
+
+                                <div class="infra-item">
+                                    <strong>Launch Template</strong>
+                                    <span>ASG-Launch-Template</span>
+                                </div>
+
+                                <div class="infra-item">
+                                    <strong>Auto Scaling Group</strong>
+                                    <span>ASG-Web-Servers</span>
+                                </div>
+
+                                <div class="infra-item">
+                                    <strong>Capacity</strong>
+                                    <span>2–3 EC2 Instances</span>
+                                </div>
+
+                            </div>
+
+
+                            <div class="asg-box">
+
+                                <div class="asg-title">
+                                    Auto Scaling EC2 Instances
+                                </div>
+
+
+                                <div class="instance-row">
+
+                                    <div class="instance">
+
+                                        <div class="instance-icon">▣</div>
+
+                                        <strong>EC2 Instance 01</strong>
+
+                                        <span class="healthy">
+                                            HEALTHY
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="instance">
+
+                                        <div class="instance-icon">▣</div>
+
+                                        <strong>EC2 Instance 02</strong>
+
+                                        <span class="healthy">
+                                            HEALTHY
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="instance">
+
+                                        <div class="instance-icon">▣</div>
+
+                                        <strong>EC2 Instance 03</strong>
+
+                                        <span class="healthy">
+                                            HEALTHY
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="architecture-arrow">↓</div>
+
+
+                    <div class="architecture-node">
+
+                        <div class="node-icon">🐳</div>
+
+                        <strong>Docker Container</strong>
+
+                        <span>aws-asg-springboot</span>
+
+                    </div>
+
+
+                    <div class="architecture-arrow">↓</div>
+
+
+                    <div class="architecture-node">
+
+                        <div class="node-icon">☕</div>
+
+                        <strong>Spring Boot Application</strong>
+
+                        <span>REST API • Java 17 • Port 8080</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- DEPLOYMENT STATUS -->
+
+        <section class="section">
+
+            <div class="section-header">
+                <h3>Deployment & Infrastructure Status</h3>
+                <p>Current application infrastructure configuration</p>
+            </div>
+
+            <div class="grid">
+
+                <div class="card">
+                    <div class="card-title">Jenkins</div>
+                    <div class="card-value">CI/CD Active</div>
+                    <div class="card-subtitle">Automated pipeline execution</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Auto Scaling</div>
+                    <div class="card-value">3 Instances</div>
+                    <div class="card-subtitle">Healthy and InService</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Load Balancer</div>
+                    <div class="card-value">Active</div>
+                    <div class="card-subtitle">Traffic distribution enabled</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Target Group</div>
+                    <div class="card-value">3 / 3 Healthy</div>
+                    <div class="card-subtitle">Port 80 health checks</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Launch Template</div>
+                    <div class="card-value">Configured</div>
+                    <div class="card-subtitle">Automated EC2 provisioning</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Network</div>
+                    <div class="card-value">VPC + Subnet</div>
+                    <div class="card-subtitle">AWS private networking</div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- TECHNOLOGY STACK -->
+
+        <section class="section">
+
+            <div class="section-header">
+                <h3>Technology Stack</h3>
+                <p>Application, CI/CD, containerization and AWS technologies</p>
+            </div>
+
+
+            <div class="tech-section">
+
+                <div class="tech-group">
+
+                    <div class="tech-group-title">
+                        Application
+                    </div>
+
+                    <div class="tech-list">
+                        <div class="tech">Java 17</div>
+                        <div class="tech">Spring Boot</div>
+                        <div class="tech">REST API</div>
+                        <div class="tech">Maven</div>
+                    </div>
+
+                </div>
+
+
+                <div class="tech-group">
+
+                    <div class="tech-group-title">
+                        CI/CD & DevOps
+                    </div>
+
+                    <div class="tech-list">
+                        <div class="tech">GitHub</div>
+                        <div class="tech">Jenkins</div>
+                        <div class="tech">CI/CD</div>
+                        <div class="tech">Docker</div>
+                        <div class="tech">Docker Hub</div>
+                    </div>
+
+                </div>
+
+
+                <div class="tech-group">
+
+                    <div class="tech-group-title">
+                        AWS Cloud
+                    </div>
+
+                    <div class="tech-list">
+                        <div class="tech">EC2</div>
+                        <div class="tech">VPC</div>
+                        <div class="tech">Subnet</div>
+                        <div class="tech">Internet Gateway</div>
+                        <div class="tech">Launch Template</div>
+                        <div class="tech">Auto Scaling Group</div>
+                        <div class="tech">Application Load Balancer</div>
+                        <div class="tech">Target Group</div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ENDPOINTS -->
+
+        <section class="section">
+
+            <div class="section-header">
+                <h3>Application Endpoints</h3>
+                <p>Spring Boot REST endpoints exposed through the ALB</p>
+            </div>
+
+
+            <div class="tech-section">
+
+                <div class="endpoint-list">
+
+                    <div class="endpoint">
+
+                        <div class="method">
+                            GET
+                        </div>
+
+                        <strong>/</strong>
+
+                        <small>
+                            Application Dashboard
+                        </small>
+
+                    </div>
+
+
+                    <div class="endpoint">
+
+                        <div class="method">
+                            GET
+                        </div>
+
+                        <strong>/health</strong>
+
+                        <small id="healthResult">
+                            Checking...
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer class="footer">
+
+        AWS ASG + ALB + Spring Boot + Docker
+        <br>
+
+        Automated CI/CD with GitHub + Jenkins + Docker Hub
+
+    </footer>
+
+
+    <script>
+
+        fetch("/health")
+            .then(response => {
+
+                if (!response.ok) {
+                    throw new Error("Health check failed");
+                }
+
+                return response.text();
+
+            })
+            .then(data => {
+
+                document.getElementById("statusText").innerText = "APPLICATION HEALTHY";
+
+                document.getElementById("healthResult").innerText = data;
+
+            })
+            .catch(error => {
+
+                document.getElementById("statusText").innerText = "CHECK FAILED";
+
+                document.getElementById("healthResult").innerText =
+                    "Health check unavailable";
+
+            });
+
+    </script>
+
+</body>
+
+</html>
