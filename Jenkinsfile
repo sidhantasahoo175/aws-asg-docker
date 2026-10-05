@@ -11,7 +11,8 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'mvn clean package -Dmaven.test.skip=true'            }
+                sh 'mvn clean package -Dmaven.test.skip=true'
+            }
         }
 
         stage('Docker Build') {
@@ -40,48 +41,48 @@ pipeline {
                         docker push \
                             "$DOCKER_USERNAME/aws-asg-springboot:latest"
                     '''
-               stage('Deploy to AWS ASG') {
-    steps {
-        sh '''
-            echo "Starting AWS Auto Scaling Instance Refresh..."
+                }
+            }
+        }
 
-            REFRESH_ID=$(aws autoscaling start-instance-refresh \
-                --auto-scaling-group-name ASG-Web-Servers \
-                --preferences '{"MinHealthyPercentage":66,"InstanceWarmup":120,"SkipMatching":false}' \
-                --region ap-south-1 \
-                --query 'InstanceRefreshId' \
-                --output text)
+        stage('Deploy to AWS ASG') {
+            steps {
+                sh '''
+                    echo "Starting AWS Auto Scaling Instance Refresh..."
 
-            echo "Instance Refresh ID: $REFRESH_ID"
+                    REFRESH_ID=$(aws autoscaling start-instance-refresh \
+                        --auto-scaling-group-name ASG-Web-Servers \
+                        --preferences '{"MinHealthyPercentage":66,"InstanceWarmup":120,"SkipMatching":false}' \
+                        --region ap-south-1 \
+                        --query 'InstanceRefreshId' \
+                        --output text)
 
-            while true
-            do
-                STATUS=$(aws autoscaling describe-instance-refreshes \
-                    --auto-scaling-group-name ASG-Web-Servers \
-                    --instance-refresh-ids "$REFRESH_ID" \
-                    --region ap-south-1 \
-                    --query 'InstanceRefreshes[0].Status' \
-                    --output text)
+                    echo "Instance Refresh ID: $REFRESH_ID"
 
-                echo "Instance Refresh Status: $STATUS"
+                    while true
+                    do
+                        STATUS=$(aws autoscaling describe-instance-refreshes \
+                            --auto-scaling-group-name ASG-Web-Servers \
+                            --instance-refresh-ids "$REFRESH_ID" \
+                            --region ap-south-1 \
+                            --query 'InstanceRefreshes[0].Status' \
+                            --output text)
 
-                if [ "$STATUS" = "Successful" ]; then
-                    echo "Deployment completed successfully."
-                    break
-                fi
+                        echo "Instance Refresh Status: $STATUS"
 
-                if [ "$STATUS" = "Failed" ] || [ "$STATUS" = "Cancelled" ]; then
-                    echo "Deployment failed with status: $STATUS"
-                    exit 1
-                fi
+                        if [ "$STATUS" = "Successful" ]; then
+                            echo "Deployment completed successfully."
+                            break
+                        fi
 
-                sleep 20
-            done
-        '''
-    }
-}
- }
+                        if [ "$STATUS" = "Failed" ] || [ "$STATUS" = "Cancelled" ]; then
+                            echo "Deployment failed with status: $STATUS"
+                            exit 1
+                        fi
 
+                        sleep 20
+                    done
+                '''
             }
         }
     }
